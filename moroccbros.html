@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Moroccbros – Morocco Trip Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at top, #0f172a 0, #020617 50%, #000 100%);
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.18);
+      --accent-strong: rgba(34, 197, 94, 0.45);
+      --accent-stronger: rgba(34, 197, 94, 0.7);
+      --card-bg: rgba(15, 23, 42, 0.92);
+      --border-subtle: rgba(148, 163, 184, 0.25);
+      --border-strong: rgba(148, 163, 184, 0.55);
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --text-soft2: #6b7280;
+      --danger: #f97373;
+      --header-h: 70px;
+      --radius-xl: 20px;
+      --radius-2xl: 26px;
+      --shadow-soft: 0 24px 60px rgba(15, 23, 42, 0.8);
+      --shadow-glow: 0 0 40px rgba(34, 197, 94, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: #020617;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    body {
+      background-image: var(--bg-gradient);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    /* Subtle animated gradient “aurora” behind everything */
+    .bg-aurora {
+      position: fixed;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.18) 0, transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.26) 0, transparent 55%),
+        radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.22) 0, transparent 52%);
+      opacity: 0.9;
+      filter: blur(40px);
+      animation: auroraShift 24s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    @keyframes auroraShift {
+      0%   { transform: translate3d(-20px, 0, 0) scale(1); }
+      50%  { transform: translate3d(40px, -30px, 0) scale(1.04); }
+      100% { transform: translate3d(-10px, 30px, 0) scale(1.02); }
+    }
+
+    /* Initial page reveal overlay */
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #020617 0, #000 74%);
+      z-index: 50;
+      animation: overlayFadeOut 900ms ease-out 900ms forwards;
+      pointer-events: none;
+    }
+
+    @keyframes overlayFadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    .intro-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transform: translateY(12px);
+      animation:
+        logoFloat 900ms cubic-bezier(0.22, 0.99, 0.55, 1.25),
+        logoGlow 1800ms ease-in-out infinite alternate 900ms;
+    }
+
+    @keyframes logoFloat {
+      from { opacity: 0; transform: translateY(30px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes logoGlow {
+      from { text-shadow: 0 0 0 rgba(34, 197, 94, 0.0); }
+      to   { text-shadow: 0 0 28px rgba(34, 197, 94, 0.65); }
+    }
+
+    .intro-logo-mark {
+      width: 62px;
+      height: 62px;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      background:
+        radial-gradient(circle at 30% 0%, rgba(34, 197, 94, 0.7), transparent 65%),
+        radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.35), transparent 65%),
+        #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro-plane {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, .3);
+      background:
+        radial-gradient(circle at 20% 0, rgba(255, 255, 255, .35), transparent 60%),
+        linear-gradient(145deg, #0b1120, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-13deg);
+    }
+
+    .intro-plane::before {
+      content: "✈";
+      font-size: 17px;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.6));
+    }
+
+    .intro-tagline {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.8);
+    }
+
+    .intro-wordmark {
+      font-size: 2.1rem;
+      font-weight: 720;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .intro-wordmark span {
+      background: linear-gradient(to right, #a5f3fc, #22c55e);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    /* Main app shell */
+    .app-shell {
+      width: 100%;
+      max-width: 1200px;
+      margin: auto;
+      border-radius: var(--radius-2xl);
+      border: 1px solid var(--border-strong);
+      background:
+        radial-gradient(circle at top, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.88)),
+        linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      transform-origin: 50% 20%;
+      opacity: 0;
+      transform: translateY(32px) scale(.98);
+      animation: appReveal 800ms cubic-bezier(.23, 1, .32, 1) forwards 350ms;
+    }
+
+    @keyframes appReveal {
+      from {
+        opacity: 0;
+        transform: translateY(32px) scale(.97);
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        box-shadow: var(--shadow-soft);
+      }
+    }
+
+    /* Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.9);
+      background: linear-gradient(
+        to right,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.6),
+        rgba(15, 23, 42, 0.96)
+      );
+      position: relative;
+    }
+
+    .app-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-badge {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, .4);
+      background:
+        radial-gradient(circle at 0 0, rgba(34, 197, 94, .5), transparent 68%),
+        radial-gradient(circle at 100% 100%, rgba(56, 189, 248, .4), transparent 65%),
+        #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .8);
+    }
+
+    .brand-badge::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(
+        from 200deg,
+        rgba(34, 197, 94, .04),
+        transparent 30%,
+        rgba(56, 189, 248, .12),
+        transparent 85%
+      );
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .brand-icon {
+      position: relative;
+      font-size: 20px;
+      filter: drop-shadow(0 5px 6px rgba(0,0,0,.8));
+    }
+
+    .brand-text-main {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .brand-name {
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.88rem;
+    }
+
+    .brand-name span {
+      background: linear-gradient(to right, #bef264, #22c55e);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .brand-tagline {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft2);
+    }
+
+    .app-header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.78rem;
+    }
+
+    .pill-meta {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, .4);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, .95), rgba(15, 23, 42, .92));
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .pill-meta strong {
+      font-weight: 550;
+      color: var(--accent);
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.16);
+    }
+
+    .pill-subtle {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--text-soft2);
+    }
+
+    /* Controls + summary strip */
+    .app-controls {
+      padding: 12px 20px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, .95),
+        rgba(15, 23, 42, .9)
+      );
+    }
+
+    .controls-left,
+    .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .controls-left {
+      color: var(--text-soft);
+      font-size: 0.78rem;
+    }
+
+    .controls-left strong {
+      color: var(--text-main);
+      font-weight: 550;
+    }
+
+    .trip-pill {
+      border-radius: 999px;
+      padding: 4px 8px;
+      border: 1px solid rgba(148, 163, 184, .35);
+      background: rgba(15, 23, 42, .9);
+    }
+
+    .trip-pill span {
+      opacity: .7;
+    }
+
+    .trip-pill strong {
+      opacity: 1;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 7px 13px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: rgba(15, 23, 42, .9);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition:
+        background 120ms ease-out,
+        border-color 120ms ease-out,
+        box-shadow 120ms ease-out,
+        transform 100ms ease-out;
+      user-select: none;
+    }
+
+    .btn span.icon {
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at 0 50%, var(--accent-stronger), var(--accent-strong));
+      border-color: rgba(21, 128, 61, 0.9);
+      box-shadow:
+        0 12px 30px rgba(22, 163, 74, 0.35),
+        0 0 0 1px rgba(22, 163, 74, 0.35);
+    }
+
+    .btn-outline {
+      border-color: rgba(148, 163, 184, .6);
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, .18), transparent 55%),
+        rgba(15, 23, 42, .9);
+      color: var(--text-soft);
+    }
+
+    .btn-ghost {
+      border-color: transparent;
+      background: transparent;
+      color: var(--text-soft2);
+      padding-inline: 6px;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(15, 23, 42, 0.7);
+    }
+
+    .btn-primary:hover {
+      box-shadow:
+        0 20px 40px rgba(22, 163, 74, 0.45),
+        0 0 0 1px rgba(22, 163, 74, 0.45);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+
+    .btn-danger {
+      color: var(--danger);
+    }
+
+    /* Main content area */
+    .app-body {
+      display: flex;
+      flex-direction: row;
+      min-height: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .table-wrapper {
+      flex: 1.7;
+      border-right: 1px solid rgba(30, 41, 59, .9);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, .98), rgba(12, 20, 38, .96));
+      padding: 14px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .sidebar {
+      flex: 1;
+      min-width: 260px;
+      max-width: 380px;
+      padding: 14px 16px 18px;
+      background: radial-gradient(circle at top right, rgba(15, 23, 42, .98), rgba(12, 20, 38, .96));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar-card {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at 0 0, rgba(34, 197, 94, .12), transparent 70%),
+        rgba(15, 23, 42, .96);
+      padding: 10px 12px 11px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .sidebar-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.85rem;
+      font-weight: 550;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-card h3 span {
+      font-size: 0.9rem;
+    }
+
+    .sidebar-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 6px 0 4px;
+    }
+
+    .chip {
+      padding: 4px 8px;
+      font-size: 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, .35);
+      background: rgba(15, 23, 42, .94);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .chip-primary {
+      border-color: rgba(34, 197, 94, .7);
+      background: rgba(22, 163, 74, .1);
+      color: #bbf7d0;
+    }
+
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 0;
+    }
+
+    .sidebar-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-list li span.icon {
+      font-size: 0.8rem;
+      opacity: .65;
+      margin-top: 1px;
+    }
+
+    .sidebar-list li span.text {
+      flex: 1;
+    }
+
+    .sidebar-footer-note {
+      font-size: 0.72rem;
+      color: var(--text-soft2);
+      margin-top: 8px;
+    }
+
+    /* Table */
+    .table-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .table-header-row h2 {
+      margin: 0;
+      font-size: 0.96rem;
+      font-weight: 550;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .table-header-row small {
+      font-size: 0.75rem;
+      color: var(--text-soft2);
+    }
+
+    .table-container {
+      flex: 1;
+      border-radius: 16px;
+      border: 1px solid rgba(30, 64, 175, .7);
+      background:
+        linear-gradient(to bottom, rgba(15, 23, 42, .98), rgba(15, 23, 42, .96));
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .8);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .table-scroll {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 700px;
+      table-layout: fixed;
+      font-size: 0.8rem;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background:
+        linear-gradient(to bottom,
+          rgba(15, 23, 42, 1),
+          rgba(15, 23, 42, .98),
+          rgba(15, 23, 42, .96));
+    }
+
+    thead::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent,
+        rgba(15, 23, 42, .6),
+        rgba(30, 64, 175, .9),
+        rgba(15, 23, 42, .6),
+        transparent
+      );
+      pointer-events: none;
+    }
+
+    th, td {
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.95);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft2);
+      border-bottom-color: rgba(55, 65, 81, 1);
+      position: relative;
+      white-space: nowrap;
+    }
+
+    th span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    th span.col-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, .75);
+    }
+
+    th:nth-child(1) { width: 90px; }
+    th:nth-child(2) { width: 70px; }
+    th:nth-child(3) { width: 190px; }
+    th:nth-child(4) { width: 210px; }
+    th:nth-child(5) { width: 220px; }
+    th:nth-child(6) { width: 210px; }
+    th:nth-child(7) { width: 230px; }
+
+    tbody tr {
+      transition: background 120ms ease-out;
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.82);
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    tbody tr:hover {
+      background: radial-gradient(circle at 0 0, rgba(34, 197, 94, 0.15), rgba(15, 23, 42, 0.96));
+    }
+
+    td {
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    td.primary-day {
+      font-weight: 560;
+      color: #e5e7eb;
+    }
+
+    td .subtext {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-soft2);
+      margin-top: 2px;
+    }
+
+    .editable-cell {
+      cursor: text;
+      border-radius: 8px;
+      padding: 4px 6px;
+      margin: -4px -4px;
+      min-height: 1.3em;
+      outline: none;
+      transition:
+        background 120ms ease-out,
+        box-shadow 120ms ease-out,
+        border-color 120ms ease-out;
+      border: 1px solid transparent;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .editable-cell::placeholder {
+      color: rgba(148, 163, 184, .7);
+    }
+
+    .editable-cell:focus-visible,
+    .editable-cell:focus {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: var(--accent-soft);
+      box-shadow:
+        0 0 0 1px var(--accent-soft),
+        0 0 0 1px rgba(15, 23, 42, 1),
+        0 0 0 11px rgba(34, 197, 94, .12);
+    }
+
+    .editable-cell.placeholder {
+      color: rgba(148, 163, 184, .75);
+      font-style: italic;
+    }
+
+    .row-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, .4);
+      background: rgba(15, 23, 42, .96);
+      color: var(--text-soft);
+    }
+
+    .row-tag strong {
+      color: var(--accent);
+      font-weight: 560;
+    }
+
+    .row-divider {
+      height: 1px;
+      background: radial-gradient(circle at 0 0, rgba(34, 197, 94, 0.4), transparent);
+      opacity: .5;
+    }
+
+    .table-footer {
+      padding: 7px 11px 7px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: var(--text-soft2);
+      border-top: 1px solid rgba(30, 64, 175, .8);
+      background: radial-gradient(circle at bottom, rgba(15, 23, 42, 1), rgba(15, 23, 42, .96));
+    }
+
+    .table-footer strong {
+      color: var(--accent);
+      font-weight: 550;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(34, 197, 94, .2);
+    }
+
+    /* Small screen tweaks */
+    @media (max-width: 980px) {
+      body {
+        padding: 10px;
+      }
+
+      .app-shell {
+        border-radius: 18px;
+      }
+
+      .app-body {
+        flex-direction: column;
+      }
+
+      .table-wrapper {
+        border-right: none;
+        border-bottom: 1px solid rgba(30, 41, 59, .9);
+      }
+
+      .sidebar {
+        max-width: none;
+      }
+
+      .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .app-header-right {
+        align-self: stretch;
+        justify-content: space-between;
+      }
+
+      .controls-left {
+        width: 100%;
+        margin-bottom: 4px;
+      }
+
+      .controls-right {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app-header-right {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .controls-right .btn-ghost {
+        display: none;
+      }
+
+      table {
+        font-size: 0.76rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .intro-overlay {
+        display: none;
+      }
+
+      body {
+        overflow: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-aurora"></div>
+
+  <!-- Initial reveal overlay -->
+  <div class="intro-overlay">
+    <div class="intro-logo">
+      <div class="intro-logo-mark">
+        <div class="intro-plane"></div>
+      </div>
+      <div class="intro-tagline">Morocco 2025</div>
+      <div class="intro-wordmark"><span>Moroccbros</span></div>
+    </div>
+  </div>
+
+  <main class="app-shell" id="app">
+    <header class="app-header">
+      <div class="app-header-left">
+        <div class="brand-badge">
+          <div class="brand-icon">🧭</div>
+        </div>
+        <div>
+          <div class="brand-text-main">
+            <div class="brand-name"><span>Moroccbros</span></div>
+          </div>
+          <div class="brand-tagline">Two bros, one Morocco mission</div>
+        </div>
+      </div>
+      <div class="app-header-right">
+        <div class="pill-meta">
+          <span class="pill-dot"></span>
+          <span>Itinerary synced in this browser</span>
+        </div>
+        <div class="pill-meta" id="trip-length-pill">
+          <span>Trip:</span>
+          <strong id="trip-length-label">14 days</strong>
+        </div>
+        <div class="pill-subtle" id="last-saved-label">
+          Last saved: just now
+        </div>
+      </div>
+    </header>
+
+    <section class="app-controls">
+      <div class="controls-left">
+        <div class="trip-pill">
+          <span>Route:</span>
+          <strong>Perth → Doha → Morocco → Doha → Perth</strong>
+        </div>
+        <div class="trip-pill">
+          <span>Primary base:</span>
+          <strong>Casablanca, Marrakech, Fès, Rabat</strong>
+        </div>
+      </div>
+      <div class="controls-right">
+        <button class="btn btn-outline" id="btn-add-row">
+          <span class="icon">➕</span>
+          <span>Add Day / Note Row</span>
+        </button>
+        <button class="btn btn-outline btn-danger" id="btn-reset">
+          <span class="icon">⟲</span>
+          <span>Reset to Original Plan</span>
+        </button>
+        <button class="btn btn-primary" id="btn-scroll-bottom">
+          <span class="icon">⬇️</span>
+          <span>Jump to End</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="app-body">
+      <section class="table-wrapper">
+        <div class="table-header-row">
+          <h2>
+            Day-by-day itinerary
+            <small id="day-count-label">(0 days)</small>
+          </h2>
+          <small>Click any cell to edit – changes save automatically.</small>
+        </div>
+
+        <div class="table-container">
+          <div class="table-scroll" id="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th><span><span class="col-dot"></span>Date</span></th>
+                  <th><span><span class="col-dot"></span>Day</span></th>
+                  <th><span><span class="col-dot"></span>Location</span></th>
+                  <th><span><span class="col-dot"></span>Accommodation</span></th>
+                  <th><span><span class="col-dot"></span>Transport / Flights</span></th>
+                  <th><span><span class="col-dot"></span>Activities / Events</span></th>
+                  <th><span><span class="col-dot"></span>Notes / Confirmations</span></th>
+                </tr>
+              </thead>
+              <tbody id="itinerary-body">
+                <!-- rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <div class="status-dot"></div>
+              <span id="status-text">All changes saved locally.</span>
+            </div>
+            <div>
+              <strong id="summary-count">15 entries</strong>
+              <span> • Editable, exportable, future-you-proof.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="sidebar-card">
+          <h3><span>📌</span> Quick overview</h3>
+          <div class="sidebar-chip-row">
+            <div class="chip chip-primary" id="chip-date-range">
+              Nov 30 → Dec 13, 2025
+            </div>
+            <div class="chip">
+              ✈ 4 main flight legs
+            </div>
+            <div class="chip">
+              🐪 Desert tour: Dec 3–5
+            </div>
+          </div>
+          <ul class="sidebar-list">
+            <li>
+              <span class="icon">☀️</span>
+              <span class="text">
+                <strong>Casablanca → Marrakech → Sahara → Fès → Rabat</strong> –
+                built-in flow from city → desert → coast.
+              </span>
+            </li>
+            <li>
+              <span class="icon">💍</span>
+              <span class="text">
+                Wedding hub in <strong>Rabat</strong> with flexible “post-wedding travel”
+                days blocked out.
+              </span>
+            </li>
+            <li>
+              <span class="icon">🧪</span>
+              <span class="text">
+                All fields are live-editable. Use extra rows for packing lists,
+                budget notes, or backup plans.
+              </span>
+            </li>
+          </ul>
+          <div class="sidebar-footer-note">
+            Tip: Use one of the blank “TBD” days to sketch optional side-trips.
+          </div>
+        </section>
+
+        <section class="sidebar-card">
+          <h3><span>🧑‍🤝‍🧑</span> Moroccbros pact</h3>
+          <ul class="sidebar-list">
+            <li>
+              <span class="icon">✅</span>
+              <span class="text">
+                Keep <strong>transport + confirmation codes</strong> accurate –
+                future airport-zombie you will be grateful.
+              </span>
+            </li>
+            <li>
+              <span class="icon">📱</span>
+              <span class="text">
+                This page saves to your browser. To share edits across devices /
+                people, plug this into a tiny backend later (supabase, firebase, etc.).
+              </span>
+            </li>
+            <li>
+              <span class="icon">✨</span>
+              <span class="text">
+                Use the <strong>“Reset to Original Plan”</strong> button whenever experiments go too chaotic.
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="sidebar-card">
+          <h3><span>📝</span> Scratchpad</h3>
+          <div
+            class="editable-cell"
+            id="scratchpad"
+            contenteditable="true"
+            data-field="scratchpad"
+            style="min-height:70px; font-size:0.78rem;"
+          ></div>
+          <div class="sidebar-footer-note">
+            Shared notes for “don’t forget” moments – packing, must-eat spots,
+            playlists, whatever.
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    // NOTE:
+    // This version saves updates in the browser using localStorage.
+    // For all users to see the same edits live, you’ll want to hook
+    // these save/load functions up to a backend API or database.
+
+    const STORAGE_KEY = "moroccbros-itinerary-v1";
+    const SCRATCHPAD_KEY = "moroccbros-scratchpad-v1";
+
+    const initialItinerary = [
+      {
+        date: "2025-11-30",
+        day: "Day 1",
+        location: "Perth \u2192 Doha",
+        accommodation: "In transit",
+        transport: "QR 8406 \u2013 Perth 15:05 \u2192 Doha 21:40",
+        activities: "",
+        notes: "Qatar ref 9T864K"
+      },
+      {
+        date: "2025-12-01",
+        day: "Day 2",
+        location: "Doha \u2192 Casablanca",
+        accommodation: "Hotel Tropicana, Boulevard de la Corniche, Anfa, Casablanca",
+        transport: "QR 1397 \u2013 Doha 07:35 \u2192 Casablanca 14:00",
+        activities: "Arrival, transfer to hotel",
+        notes: "Pay upon arrival: \u20ac 55. Check-in 14:00 \u2022 Conf. 6317074065"
+      },
+      {
+        date: "",
+        day: "",
+        location: "Casey arrives via Transavia Flight KL2581 at 1640 Rabat",
+        accommodation: "",
+        transport: "",
+        activities: "",
+        notes: ""
+      },
+      {
+        date: "2025-12-02",
+        day: "Day 3",
+        location: "Casablanca \u2192 Marrakech",
+        accommodation: "Tempoo Hotel Marrakech City, 15 Angle Rue Abou Bakr Seddiq et Omar Ben El Khattab - Hivernage - 40000 Marrakech",
+        transport: "Evening transfer to Marrakech",
+        activities: "Visit Casablanca AM, travel to Marrakech PM",
+        notes: "Paid. Have requested late check-in  \u2022 Conf. 6579688683"
+      },
+      {
+        date: "2025-12-03",
+        day: "Day 4",
+        location: "Marrakech \u2192 Dades Valley",
+        accommodation: "Desert Tour",
+        transport: "Tour pickup 08:30",
+        activities: "Atlas Mountains \u2192 Ait Benhaddou \u2192 Ouarzazate \u2192 Dades Valley",
+        notes: "Overnight in Dades"
+      },
+      {
+        date: "2025-12-04",
+        day: "Day 5",
+        location: "Dades Valley \u2192 Merzouga",
+        accommodation: "Desert Tour",
+        transport: "",
+        activities: "Travel to Merzouga, camel trek, overnight Berber camp",
+        notes: ""
+      },
+      {
+        date: "2025-12-05",
+        day: "Day 6",
+        location: "Merzouga \u2192 F\u00e8s",
+        accommodation: "Desert Tour",
+        transport: "",
+        activities: "Travel to F\u00e8s via Ziz Valley, Midelt, Ifrane; overnight in F\u00e8s",
+        notes: ""
+      },
+      {
+        date: "2025-12-06",
+        day: "Day 7",
+        location: "F\u00e8s \u2192 Rabat",
+        accommodation: "Riad El Pacha, Rabat Medina",
+        transport: "Tour ends in Rabat",
+        activities: "Pre-wedding Meet & Greet 14:00\u2013sunset at Marina Steakhouse",
+        notes: "Will be charged automatically. Check-in after 14:00 \u2022 Conf. 6149643978"
+      },
+      {
+        date: "2025-12-07",
+        day: "Day 8",
+        location: "Rabat",
+        accommodation: "Riad El Pacha",
+        transport: "",
+        activities: "Free day",
+        notes: ""
+      },
+      {
+        date: "Mon Dec 8\u2013Tue Dec 9 (dawn)",
+        day: "Day 9\u201310",
+        location: "Rabat",
+        accommodation: "Riad El Pacha",
+        transport: "",
+        activities: "Wedding at Palais Tazi (20:00\u2013dawn)",
+        notes: "Dress: Djellaba or Jabador"
+      },
+      {
+        date: "2025-12-09",
+        day: "Day 10",
+        location: "Rabat \u2192 TBD",
+        accommodation: "TBD",
+        transport: "Check-out 11:30\u201312:00",
+        activities: "Begin post-wedding travel",
+        notes: "Need plans for Dec 9\u201312"
+      },
+      {
+        date: "2025-12-10",
+        day: "Day 11",
+        location: "TBD",
+        accommodation: "TBD",
+        transport: "",
+        activities: "Open day",
+        notes: ""
+      },
+      {
+        date: "2025-12-11",
+        day: "Day 12",
+        location: "TBD",
+        accommodation: "TBD",
+        transport: "",
+        activities: "Likely return to Casablanca",
+        notes: ""
+      },
+      {
+        date: "2025-12-12",
+        day: "Day 13",
+        location: "Casablanca \u2192 Doha",
+        accommodation: "In transit",
+        transport: "QR 1398 \u2013 Casablanca 15:30 \u2192 Doha 00:25 (+1)",
+        activities: "Depart Morocco",
+        notes: ""
+      },
+      {
+        date: "2025-12-13",
+        day: "Day 14",
+        location: "Doha \u2192 Perth",
+        accommodation: "In transit",
+        transport: "QR 900 \u2013 Doha 02:40 \u2192 Perth 18:45",
+        activities: "Arrive home",
+        notes: ""
+      }
+    ];
+
+    const columns = [
+      { key: "date", label: "Date" },
+      { key: "day", label: "Day" },
+      { key: "location", label: "Location" },
+      { key: "accommodation", label: "Accommodation" },
+      { key: "transport", label: "Transport / Flights" },
+      { key: "activities", label: "Activities / Events" },
+      { key: "notes", label: "Notes / Confirmations" }
+    ];
+
+    let itineraryData = [];
+    let saveTimeout = null;
+
+    function loadItinerary() {
+      try {
+        const stored = window.localStorage.getItem(STORAGE_KEY);
+        if (!stored) return structuredClone(initialItinerary);
+        const parsed = JSON.parse(stored);
+        if (!Array.isArray(parsed) || !parsed.length) {
+          return structuredClone(initialItinerary);
+        }
+        // Make sure all expected keys exist
+        return parsed.map(row => {
+          const base = {};
+          columns.forEach(col => {
+            base[col.key] = typeof row[col.key] === "string" ? row[col.key] : "";
+          });
+          return base;
+        });
+      } catch (e) {
+        console.warn("Failed to load itinerary from storage", e);
+        return structuredClone(initialItinerary);
+      }
+    }
+
+    function saveItinerary() {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(itineraryData));
+        updateStatus("All changes saved locally.");
+        updateLastSavedLabel();
+      } catch (e) {
+        console.warn("Failed to save itinerary", e);
+        updateStatus("Could not save to this browser (storage full or disabled).");
+      }
+    }
+
+    function scheduleSave() {
+      if (saveTimeout) window.clearTimeout(saveTimeout);
+      updateStatus("Saving...");
+      saveTimeout = window.setTimeout(saveItinerary, 350);
+    }
+
+    function updateStatus(text) {
+      const el = document.getElementById("status-text");
+      if (el) el.textContent = text;
+    }
+
+    function updateLastSavedLabel() {
+      const el = document.getElementById("last-saved-label");
+      if (!el) return;
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      el.textContent = `Last saved: ${hh}:${mm}`;
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("itinerary-body");
+      tbody.innerHTML = "";
+
+      itineraryData.forEach((row, idx) => {
+        const tr = document.createElement("tr");
+
+        columns.forEach((col, colIndex) => {
+          const td = document.createElement("td");
+
+          if (col.key === "day") {
+            td.classList.add("primary-day");
+          }
+
+          const div = document.createElement("div");
+          div.className = "editable-cell";
+          div.contentEditable = "true";
+          div.dataset.row = String(idx);
+          div.dataset.field = col.key;
+          const value = row[col.key] ?? "";
+          if (!value) {
+            div.classList.add("placeholder");
+            div.textContent = placeholderForField(col.key);
+          } else {
+            div.textContent = value;
+          }
+
+          div.addEventListener("focus", handleCellFocus);
+          div.addEventListener("blur", handleCellBlur);
+          div.addEventListener("input", handleCellInput);
+          div.addEventListener("keydown", handleCellKeydown);
+
+          td.appendChild(div);
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      });
+
+      updateSummary();
+    }
+
+    function placeholderForField(field) {
+      switch (field) {
+        case "date": return "YYYY-MM-DD or note...";
+        case "day": return "Day label (e.g. Day 3)";
+        case "location": return "City / route (e.g. Marrakech → Sahara)";
+        case "accommodation": return "Hotel / riad / camp";
+        case "transport": return "Flights, trains, pickup times";
+        case "activities": return "Key plans and experiences";
+        case "notes": return "Refs, confirmation #s, special notes";
+        default: return "";
+      }
+    }
+
+    function handleCellFocus(e) {
+      const el = e.currentTarget;
+      if (el.classList.contains("placeholder")) {
+        el.classList.remove("placeholder");
+        el.textContent = "";
+      }
+    }
+
+    function handleCellBlur(e) {
+      const el = e.currentTarget;
+      const rowIndex = Number(el.dataset.row ?? "-1");
+      const field = el.dataset.field;
+      if (!Number.isFinite(rowIndex) || !field) return;
+
+      const newValue = el.textContent.trim();
+      itineraryData[rowIndex][field] = newValue;
+      if (!newValue) {
+        el.classList.add("placeholder");
+        el.textContent = placeholderForField(field);
+      }
+      scheduleSave();
+      updateSummary();
+    }
+
+    function handleCellInput(e) {
+      const el = e.currentTarget;
+      el.classList.remove("placeholder");
+      const rowIndex = Number(el.dataset.row ?? "-1");
+      const field = el.dataset.field;
+      if (!Number.isFinite(rowIndex) || !field) return;
+      itineraryData[rowIndex][field] = el.textContent;
+      scheduleSave();
+    }
+
+    function handleCellKeydown(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        // Move to next row in same column
+        const el = e.currentTarget;
+        const rowIndex = Number(el.dataset.row ?? "-1");
+        const field = el.dataset.field;
+        const nextRow = rowIndex + 1;
+        if (nextRow < itineraryData.length) {
+          const next = document.querySelector(
+            `.editable-cell[data-row="${nextRow}"][data-field="${field}"]`
+          );
+          if (next) {
+            next.focus();
+            // Move caret to end
+            document.getSelection().selectAllChildren(next);
+            document.getSelection().collapseToEnd();
+          }
+        }
+      }
+    }
+
+    function updateSummary() {
+      const total = itineraryData.length;
+      const dayCountEl = document.getElementById("day-count-label");
+      const summaryCountEl = document.getElementById("summary-count");
+      const lengthLabel = document.getElementById("trip-length-label");
+      const dateRangeChip = document.getElementById("chip-date-range");
+
+      if (summaryCountEl) summaryCountEl.textContent = `${total} entries`;
+
+      const daysWithLabel = itineraryData.filter(r => (r.day || "").toLowerCase().includes("day")).length;
+      if (dayCountEl) {
+        dayCountEl.textContent = `(${daysWithLabel} labeled days, ${total} rows)`;
+      }
+
+      // Roughly infer date range from first and last non-empty date cells
+      const dates = itineraryData
+        .map(r => r.date)
+        .filter(Boolean);
+
+      if (dates.length >= 1) {
+        const start = dates[0];
+        const end = dates[dates.length - 1];
+        if (lengthLabel) {
+          lengthLabel.textContent = `${dates.length} days (from ${start} to ${end})`;
+        }
+        if (dateRangeChip) {
+          dateRangeChip.textContent = `${start} → ${end}`;
+        }
+      }
+    }
+
+    function addRow() {
+      const nextIndex = itineraryData.length + 1;
+      const newRow = {
+        date: "",
+        day: `Day ${nextIndex}`,
+        location: "",
+        accommodation: "",
+        transport: "",
+        activities: "",
+        notes: ""
+      };
+      itineraryData.push(newRow);
+      renderTable();
+      scheduleSave();
+
+      // Focus newly added row's day field
+      const target = document.querySelector(
+        `.editable-cell[data-row="${itineraryData.length - 1}"][data-field="day"]`
+      );
+      if (target) {
+        target.focus();
+        document.getSelection().selectAllChildren(target);
+        document.getSelection().collapseToEnd();
+      }
+    }
+
+    function resetToOriginal() {
+      const confirmReset = window.confirm(
+        "Reset itinerary back to the original plan from the spreadsheet?\n\n" +
+        "This only affects this browser and will overwrite your current edits."
+      );
+      if (!confirmReset) return;
+
+      itineraryData = structuredClone(initialItinerary);
+      renderTable();
+      saveItinerary();
+    }
+
+    function scrollToBottom() {
+      const scroll = document.getElementById("table-scroll");
+      if (!scroll) return;
+      scroll.scrollTo({
+        top: scroll.scrollHeight,
+        behavior: "smooth"
+      });
+    }
+
+    function loadScratchpad() {
+      const pad = document.getElementById("scratchpad");
+      if (!pad) return;
+      try {
+        const stored = window.localStorage.getItem(SCRATCHPAD_KEY);
+        if (stored) {
+          pad.textContent = stored;
+        } else {
+          pad.classList.add("placeholder");
+          pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
+        }
+      } catch (e) {
+        console.warn("Scratchpad load failed", e);
+      }
+
+      pad.addEventListener("focus", () => {
+        if (pad.classList.contains("placeholder")) {
+          pad.classList.remove("placeholder");
+          pad.textContent = "";
+        }
+      });
+
+      pad.addEventListener("blur", () => {
+        const value = pad.textContent.trim();
+        if (!value) {
+          pad.classList.add("placeholder");
+          pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
+        }
+        saveScratchpad();
+      });
+
+      pad.addEventListener("input", () => {
+        saveScratchpad();
+      });
+    }
+
+    function saveScratchpad() {
+      const pad = document.getElementById("scratchpad");
+      if (!pad) return;
+      try {
+        const text = pad.classList.contains("placeholder") ? "" : pad.textContent;
+        window.localStorage.setItem(SCRATCHPAD_KEY, text);
+      } catch (e) {
+        console.warn("Scratchpad save failed", e);
+      }
+    }
+
+    function initButtons() {
+      document.getElementById("btn-add-row")?.addEventListener("click", addRow);
+      document.getElementById("btn-reset")?.addEventListener("click", resetToOriginal);
+      document.getElementById("btn-scroll-bottom")?.addEventListener("click", scrollToBottom);
+    }
+
+    // Bootstrap
+    window.addEventListener("DOMContentLoaded", () => {
+      itineraryData = loadItinerary();
+      renderTable();
+      initButtons();
+      loadScratchpad();
+      updateLastSavedLabel();
+    });
+  </script>
+</body>
+</html>
