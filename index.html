@@ -1059,498 +1059,509 @@
 <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SUPABASE_URL = "https://ykbwgbjybxrbxpovlhup.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_QR_BnoaVqWA6UIUoHWWsog_FI9k_9j2";
+  // --- Supabase config ---
+  // In production, you’d normally inject these via env vars / build step,
+  // but for a static prototype this is fine.
+  const SUPABASE_URL = "https://ykbwgbjybxrbxpovlhup.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_QR_BnoaVqWA6UIUoHWWsog_FI9k_9j2";
 
-const supabase = createClient(https://ykbwgbjybxrbxpovlhup.supabase.co,sb_publishable_QR_BnoaVqWA6UIUoHWWsog_FI9k_9j2);
+  // ✅ Correct Supabase client initialization
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// This is the one shared record we created in the trips table
-const TRIP_ID = "moroccbros-2025";
+  // This is the shared record in the "trips" table
+  const TRIP_ID = "moroccbros-2025";
 
-    const STORAGE_KEY = "moroccbros-itinerary-v1";
-    const SCRATCHPAD_KEY = "moroccbros-scratchpad-v1";
+  const STORAGE_KEY = "moroccbros-itinerary-v1";
+  const SCRATCHPAD_KEY = "moroccbros-scratchpad-v1";
 
-    const initialItinerary = [
-      {
-        date: "2025-11-30",
-        day: "Day 1",
-        location: "Perth \u2192 Doha",
-        accommodation: "In transit",
-        transport: "QR 8406 \u2013 Perth 15:05 \u2192 Doha 21:40",
-        activities: "",
-        notes: "Qatar ref 9T864K"
-      },
-      {
-        date: "2025-12-01",
-        day: "Day 2",
-        location: "Doha \u2192 Casablanca",
-        accommodation: "Hotel Tropicana, Boulevard de la Corniche, Anfa, Casablanca",
-        transport: "QR 1397 \u2013 Doha 07:35 \u2192 Casablanca 14:00",
-        activities: "Arrival, transfer to hotel",
-        notes: "Pay upon arrival: \u20ac 55. Check-in 14:00 \u2022 Conf. 6317074065"
-      },
-      {
-        date: "",
-        day: "",
-        location: "Casey arrives via Transavia Flight KL2581 at 1640 Rabat",
-        accommodation: "",
-        transport: "",
-        activities: "",
-        notes: ""
-      },
-      {
-        date: "2025-12-02",
-        day: "Day 3",
-        location: "Casablanca \u2192 Marrakech",
-        accommodation: "Tempoo Hotel Marrakech City, 15 Angle Rue Abou Bakr Seddiq et Omar Ben El Khattab - Hivernage - 40000 Marrakech",
-        transport: "Evening transfer to Marrakech",
-        activities: "Visit Casablanca AM, travel to Marrakech PM",
-        notes: "Paid. Have requested late check-in  \u2022 Conf. 6579688683"
-      },
-      {
-        date: "2025-12-03",
-        day: "Day 4",
-        location: "Marrakech \u2192 Dades Valley",
-        accommodation: "Desert Tour",
-        transport: "Tour pickup 08:30",
-        activities: "Atlas Mountains \u2192 Ait Benhaddou \u2192 Ouarzazate \u2192 Dades Valley",
-        notes: "Overnight in Dades"
-      },
-      {
-        date: "2025-12-04",
-        day: "Day 5",
-        location: "Dades Valley \u2192 Merzouga",
-        accommodation: "Desert Tour",
-        transport: "",
-        activities: "Travel to Merzouga, camel trek, overnight Berber camp",
-        notes: ""
-      },
-      {
-        date: "2025-12-05",
-        day: "Day 6",
-        location: "Merzouga \u2192 F\u00e8s",
-        accommodation: "Desert Tour",
-        transport: "",
-        activities: "Travel to F\u00e8s via Ziz Valley, Midelt, Ifrane; overnight in F\u00e8s",
-        notes: ""
-      },
-      {
-        date: "2025-12-06",
-        day: "Day 7",
-        location: "F\u00e8s \u2192 Rabat",
-        accommodation: "Riad El Pacha, Rabat Medina",
-        transport: "Tour ends in Rabat",
-        activities: "Pre-wedding Meet & Greet 14:00\u2013sunset at Marina Steakhouse",
-        notes: "Will be charged automatically. Check-in after 14:00 \u2022 Conf. 6149643978"
-      },
-      {
-        date: "2025-12-07",
-        day: "Day 8",
-        location: "Rabat",
-        accommodation: "Riad El Pacha",
-        transport: "",
-        activities: "Free day",
-        notes: ""
-      },
-      {
-        date: "Mon Dec 8\u2013Tue Dec 9 (dawn)",
-        day: "Day 9\u201310",
-        location: "Rabat",
-        accommodation: "Riad El Pacha",
-        transport: "",
-        activities: "Wedding at Palais Tazi (20:00\u2013dawn)",
-        notes: "Dress: Djellaba or Jabador"
-      },
-      {
-        date: "2025-12-09",
-        day: "Day 10",
-        location: "Rabat \u2192 TBD",
-        accommodation: "TBD",
-        transport: "Check-out 11:30\u201312:00",
-        activities: "Begin post-wedding travel",
-        notes: "Need plans for Dec 9\u201312"
-      },
-      {
-        date: "2025-12-10",
-        day: "Day 11",
-        location: "TBD",
-        accommodation: "TBD",
-        transport: "",
-        activities: "Open day",
-        notes: ""
-      },
-      {
-        date: "2025-12-11",
-        day: "Day 12",
-        location: "TBD",
-        accommodation: "TBD",
-        transport: "",
-        activities: "Likely return to Casablanca",
-        notes: ""
-      },
-      {
-        date: "2025-12-12",
-        day: "Day 13",
-        location: "Casablanca \u2192 Doha",
-        accommodation: "In transit",
-        transport: "QR 1398 \u2013 Casablanca 15:30 \u2192 Doha 00:25 (+1)",
-        activities: "Depart Morocco",
-        notes: ""
-      },
-      {
-        date: "2025-12-13",
-        day: "Day 14",
-        location: "Doha \u2192 Perth",
-        accommodation: "In transit",
-        transport: "QR 900 \u2013 Doha 02:40 \u2192 Perth 18:45",
-        activities: "Arrive home",
-        notes: ""
+  // ✅ initialItinerary seeded from your spreadsheet
+  const initialItinerary = [
+    {
+      date: "2025-11-30",
+      day: "Day 1",
+      location: "Perth → Doha",
+      accommodation: "In transit",
+      transport: "QR 8406 – Perth 15:05 → Doha 21:40",
+      activities: "",
+      notes: "Qatar ref 9T864K"
+    },
+    {
+      date: "2025-12-01",
+      day: "Day 2",
+      location: "Doha → Casablanca",
+      accommodation: "Hotel Tropicana, Boulevard de la Corniche, Anfa, Casablanca",
+      transport: "QR 1397 – Doha 07:35 → Casablanca 14:00",
+      activities: "Arrival, transfer to hotel",
+      notes: "Pay upon arrival: € 55. Check-in 14:00 • Conf. 6317074065"
+    },
+    {
+      date: "",
+      day: "",
+      location: "Casey arrives via Transavia Flight KL2581 at 1640 Rabat",
+      accommodation: "",
+      transport: "",
+      activities: "",
+      notes: ""
+    },
+    {
+      date: "2025-12-02",
+      day: "Day 3",
+      location: "Casablanca → Marrakech",
+      accommodation: "Tempoo Hotel Marrakech City, 15 Angle Rue Abou Bakr Seddiq et Omar Ben El Khattab - Hivernage - 40000 Marrakech",
+      transport: "Evening transfer to Marrakech",
+      activities: "Visit Casablanca AM, travel to Marrakech PM",
+      notes: "Paid. Have requested late check-in  • Conf. 6579688683"
+    },
+    {
+      date: "2025-12-03",
+      day: "Day 4",
+      location: "Marrakech → Dades Valley",
+      accommodation: "Desert Tour",
+      transport: "Tour pickup 08:30",
+      activities: "Atlas Mountains → Ait Benhaddou → Ouarzazate → Dades Valley",
+      notes: "Overnight in Dades"
+    },
+    {
+      date: "2025-12-04",
+      day: "Day 5",
+      location: "Dades Valley → Merzouga",
+      accommodation: "Desert Tour",
+      transport: "",
+      activities: "Travel to Merzouga, camel trek, overnight Berber camp",
+      notes: ""
+    },
+    {
+      date: "2025-12-05",
+      day: "Day 6",
+      location: "Merzouga → Fès",
+      accommodation: "Desert Tour",
+      transport: "",
+      activities: "Travel to Fès via Ziz Valley, Midelt, Ifrane; overnight in Fès",
+      notes: ""
+    },
+    {
+      date: "2025-12-06",
+      day: "Day 7",
+      location: "Fès → Rabat",
+      accommodation: "Riad El Pacha, Rabat Medina",
+      transport: "Tour ends in Rabat",
+      activities: "Pre-wedding Meet & Greet 14:00–sunset at Marina Steakhouse",
+      notes: "Will be charged automatically. Check-in after 14:00 • Conf. 6149643978"
+    },
+    {
+      date: "2025-12-07",
+      day: "Day 8",
+      location: "Rabat",
+      accommodation: "Riad El Pacha",
+      transport: "",
+      activities: "Free day",
+      notes: ""
+    },
+    {
+      date: "Mon Dec 8–Tue Dec 9 (dawn)",
+      day: "Day 9–10",
+      location: "Rabat",
+      accommodation: "Riad El Pacha",
+      transport: "",
+      activities: "Wedding at Palais Tazi (20:00–dawn)",
+      notes: "Dress: Djellaba or Jabador"
+    },
+    {
+      date: "2025-12-09",
+      day: "Day 10",
+      location: "Rabat → TBD",
+      accommodation: "TBD",
+      transport: "Check-out 11:30–12:00",
+      activities: "Begin post-wedding travel",
+      notes: "Need plans for Dec 9–12"
+    },
+    {
+      date: "2025-12-10",
+      day: "Day 11",
+      location: "TBD",
+      accommodation: "TBD",
+      transport: "",
+      activities: "Open day",
+      notes: ""
+    },
+    {
+      date: "2025-12-11",
+      day: "Day 12",
+      location: "TBD",
+      accommodation: "TBD",
+      transport: "",
+      activities: "Likely return to Casablanca",
+      notes: ""
+    },
+    {
+      date: "2025-12-12",
+      day: "Day 13",
+      location: "Casablanca → Doha",
+      accommodation: "In transit",
+      transport: "QR 1398 – Casablanca 15:30 → Doha 00:25 (+1)",
+      activities: "Depart Morocco",
+      notes: ""
+    },
+    {
+      date: "2025-12-13",
+      day: "Day 14",
+      location: "Doha → Perth",
+      accommodation: "In transit",
+      transport: "QR 900 – Doha 02:40 → Perth 18:45",
+      activities: "Arrive home",
+      notes: ""
+    }
+  ];
+
+  const columns = [
+    { key: "date", label: "Date" },
+    { key: "day", label: "Day" },
+    { key: "location", label: "Location" },
+    { key: "accommodation", label: "Accommodation" },
+    { key: "transport", label: "Transport / Flights" },
+    { key: "activities", label: "Activities / Events" },
+    { key: "notes", label: "Notes / Confirmations" }
+  ];
+
+  let itineraryData = [];
+  let saveTimeout = null;
+
+  async function loadItinerary() {
+    try {
+      const { data, error } = await supabase
+        .from("trips")
+        .select("itinerary")
+        .eq("id", TRIP_ID)
+        .single();
+
+      if (error) throw error;
+
+      const parsed = data?.itinerary;
+      if (!Array.isArray(parsed) || !parsed.length) {
+        return structuredClone(initialItinerary);
       }
-    ];
 
-    const columns = [
-      { key: "date", label: "Date" },
-      { key: "day", label: "Day" },
-      { key: "location", label: "Location" },
-      { key: "accommodation", label: "Accommodation" },
-      { key: "transport", label: "Transport / Flights" },
-      { key: "activities", label: "Activities / Events" },
-      { key: "notes", label: "Notes / Confirmations" }
-    ];
-
-    let itineraryData = [];
-    let saveTimeout = null;
-
-    async function loadItinerary() {
-  try {
-    const { data, error } = await supabase
-      .from("trips")
-      .select("itinerary")
-      .eq("id", TRIP_ID)
-      .single();
-
-    if (error) throw error;
-
-    const parsed = data?.itinerary;
-    if (!Array.isArray(parsed) || !parsed.length) {
+      // Ensure all expected keys exist
+      return parsed.map((row) => {
+        const base = {};
+        columns.forEach((col) => {
+          base[col.key] = typeof row[col.key] === "string" ? row[col.key] : "";
+        });
+        return base;
+      });
+    } catch (e) {
+      console.warn("Failed to load itinerary from Supabase, falling back to defaults", e);
       return structuredClone(initialItinerary);
     }
+  }
 
-    // Ensure all expected keys exist, same as before
-    return parsed.map(row => {
-      const base = {};
-      columns.forEach(col => {
-        base[col.key] = typeof row[col.key] === "string" ? row[col.key] : "";
+  async function saveItinerary() {
+    try {
+      const scratchpadText = getScratchpadText();
+
+      const { error } = await supabase
+        .from("trips")
+        .update({
+          itinerary: itineraryData,
+          scratchpad: scratchpadText,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", TRIP_ID);
+
+      if (error) throw error;
+
+      updateStatus("All changes saved to server.");
+      updateLastSavedLabel();
+    } catch (e) {
+      console.warn("Failed to save itinerary to Supabase", e);
+      updateStatus("Could not save to server.");
+    }
+  }
+
+  function getScratchpadText() {
+    const pad = document.getElementById("scratchpad");
+    if (!pad || pad.classList.contains("placeholder")) return "";
+    return pad.textContent;
+  }
+
+  function scheduleSave() {
+    if (saveTimeout) window.clearTimeout(saveTimeout);
+    updateStatus("Saving...");
+    saveTimeout = window.setTimeout(saveItinerary, 350);
+  }
+
+  function updateStatus(text) {
+    const el = document.getElementById("status-text");
+    if (el) el.textContent = text;
+  }
+
+  function updateLastSavedLabel() {
+    const el = document.getElementById("last-saved-label");
+    if (!el) return;
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, "0");
+    const mm = String(now.getMinutes()).padStart(2, "0");
+    el.textContent = `Last saved: ${hh}:${mm}`;
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById("itinerary-body");
+    tbody.innerHTML = "";
+
+    itineraryData.forEach((row, idx) => {
+      const tr = document.createElement("tr");
+
+      columns.forEach((col) => {
+        const td = document.createElement("td");
+
+        if (col.key === "day") {
+          td.classList.add("primary-day");
+        }
+
+        const div = document.createElement("div");
+        div.className = "editable-cell";
+        div.contentEditable = "true";
+        div.dataset.row = String(idx);
+        div.dataset.field = col.key;
+        const value = row[col.key] ?? "";
+        if (!value) {
+          div.classList.add("placeholder");
+          div.textContent = placeholderForField(col.key);
+        } else {
+          div.textContent = value;
+        }
+
+        div.addEventListener("focus", handleCellFocus);
+        div.addEventListener("blur", handleCellBlur);
+        div.addEventListener("input", handleCellInput);
+        div.addEventListener("keydown", handleCellKeydown);
+
+        td.appendChild(div);
+        tr.appendChild(td);
       });
-      return base;
+
+      tbody.appendChild(tr);
     });
-  } catch (e) {
-    console.warn("Failed to load itinerary from Supabase, falling back to defaults", e);
-    return structuredClone(initialItinerary);
+
+    updateSummary();
   }
-}
 
-   async function saveItinerary() {
-  try {
-    const scratchpadText = getScratchpadText();
-
-    const { error } = await supabase
-      .from("trips")
-      .update({
-        itinerary: itineraryData,
-        scratchpad: scratchpadText,
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", TRIP_ID);
-
-    if (error) throw error;
-
-    updateStatus("All changes saved to server.");
-    updateLastSavedLabel();
-  } catch (e) {
-    console.warn("Failed to save itinerary to Supabase", e);
-    updateStatus("Could not save to server.");
+  function placeholderForField(field) {
+    switch (field) {
+      case "date":
+        return "YYYY-MM-DD or note...";
+      case "day":
+        return "Day label (e.g. Day 3)";
+      case "location":
+        return "City / route (e.g. Marrakech → Sahara)";
+      case "accommodation":
+        return "Hotel / riad / camp";
+      case "transport":
+        return "Flights, trains, pickup times";
+      case "activities":
+        return "Key plans and experiences";
+      case "notes":
+        return "Refs, confirmation #s, special notes";
+      default:
+        return "";
+    }
   }
-}
 
-function getScratchpadText() {
-  const pad = document.getElementById("scratchpad");
-  if (!pad || pad.classList.contains("placeholder")) return "";
-  return pad.textContent;
-}
-    function scheduleSave() {
-  if (saveTimeout) window.clearTimeout(saveTimeout);
-  updateStatus("Saving...");
-  saveTimeout = window.setTimeout(saveItinerary, 350);
-}
-
-    function updateStatus(text) {
-      const el = document.getElementById("status-text");
-      if (el) el.textContent = text;
-    }
-
-    function updateLastSavedLabel() {
-      const el = document.getElementById("last-saved-label");
-      if (!el) return;
-      const now = new Date();
-      const hh = String(now.getHours()).padStart(2, "0");
-      const mm = String(now.getMinutes()).padStart(2, "0");
-      el.textContent = `Last saved: ${hh}:${mm}`;
-    }
-
-    function renderTable() {
-      const tbody = document.getElementById("itinerary-body");
-      tbody.innerHTML = "";
-
-      itineraryData.forEach((row, idx) => {
-        const tr = document.createElement("tr");
-
-        columns.forEach((col, colIndex) => {
-          const td = document.createElement("td");
-
-          if (col.key === "day") {
-            td.classList.add("primary-day");
-          }
-
-          const div = document.createElement("div");
-          div.className = "editable-cell";
-          div.contentEditable = "true";
-          div.dataset.row = String(idx);
-          div.dataset.field = col.key;
-          const value = row[col.key] ?? "";
-          if (!value) {
-            div.classList.add("placeholder");
-            div.textContent = placeholderForField(col.key);
-          } else {
-            div.textContent = value;
-          }
-
-          div.addEventListener("focus", handleCellFocus);
-          div.addEventListener("blur", handleCellBlur);
-          div.addEventListener("input", handleCellInput);
-          div.addEventListener("keydown", handleCellKeydown);
-
-          td.appendChild(div);
-          tr.appendChild(td);
-        });
-
-        tbody.appendChild(tr);
-      });
-
-      updateSummary();
-    }
-
-    function placeholderForField(field) {
-      switch (field) {
-        case "date": return "YYYY-MM-DD or note...";
-        case "day": return "Day label (e.g. Day 3)";
-        case "location": return "City / route (e.g. Marrakech → Sahara)";
-        case "accommodation": return "Hotel / riad / camp";
-        case "transport": return "Flights, trains, pickup times";
-        case "activities": return "Key plans and experiences";
-        case "notes": return "Refs, confirmation #s, special notes";
-        default: return "";
-      }
-    }
-
-    function handleCellFocus(e) {
-      const el = e.currentTarget;
-      if (el.classList.contains("placeholder")) {
-        el.classList.remove("placeholder");
-        el.textContent = "";
-      }
-    }
-
-    function handleCellBlur(e) {
-      const el = e.currentTarget;
-      const rowIndex = Number(el.dataset.row ?? "-1");
-      const field = el.dataset.field;
-      if (!Number.isFinite(rowIndex) || !field) return;
-
-      const newValue = el.textContent.trim();
-      itineraryData[rowIndex][field] = newValue;
-      if (!newValue) {
-        el.classList.add("placeholder");
-        el.textContent = placeholderForField(field);
-      }
-      scheduleSave();
-      updateSummary();
-    }
-
-    function handleCellInput(e) {
-      const el = e.currentTarget;
+  function handleCellFocus(e) {
+    const el = e.currentTarget;
+    if (el.classList.contains("placeholder")) {
       el.classList.remove("placeholder");
-      const rowIndex = Number(el.dataset.row ?? "-1");
-      const field = el.dataset.field;
-      if (!Number.isFinite(rowIndex) || !field) return;
-      itineraryData[rowIndex][field] = el.textContent;
-      scheduleSave();
+      el.textContent = "";
     }
-
-    function handleCellKeydown(e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        // Move to next row in same column
-        const el = e.currentTarget;
-        const rowIndex = Number(el.dataset.row ?? "-1");
-        const field = el.dataset.field;
-        const nextRow = rowIndex + 1;
-        if (nextRow < itineraryData.length) {
-          const next = document.querySelector(
-            `.editable-cell[data-row="${nextRow}"][data-field="${field}"]`
-          );
-          if (next) {
-            next.focus();
-            // Move caret to end
-            document.getSelection().selectAllChildren(next);
-            document.getSelection().collapseToEnd();
-          }
-        }
-      }
-    }
-
-    function updateSummary() {
-      const total = itineraryData.length;
-      const dayCountEl = document.getElementById("day-count-label");
-      const summaryCountEl = document.getElementById("summary-count");
-      const lengthLabel = document.getElementById("trip-length-label");
-      const dateRangeChip = document.getElementById("chip-date-range");
-
-      if (summaryCountEl) summaryCountEl.textContent = `${total} entries`;
-
-      const daysWithLabel = itineraryData.filter(r => (r.day || "").toLowerCase().includes("day")).length;
-      if (dayCountEl) {
-        dayCountEl.textContent = `(${daysWithLabel} labeled days, ${total} rows)`;
-      }
-
-      // Roughly infer date range from first and last non-empty date cells
-      const dates = itineraryData
-        .map(r => r.date)
-        .filter(Boolean);
-
-      if (dates.length >= 1) {
-        const start = dates[0];
-        const end = dates[dates.length - 1];
-        if (lengthLabel) {
-          lengthLabel.textContent = `${dates.length} days (from ${start} to ${end})`;
-        }
-        if (dateRangeChip) {
-          dateRangeChip.textContent = `${start} → ${end}`;
-        }
-      }
-    }
-
-    function addRow() {
-      const nextIndex = itineraryData.length + 1;
-      const newRow = {
-        date: "",
-        day: `Day ${nextIndex}`,
-        location: "",
-        accommodation: "",
-        transport: "",
-        activities: "",
-        notes: ""
-      };
-      itineraryData.push(newRow);
-      renderTable();
-      scheduleSave();
-
-      // Focus newly added row's day field
-      const target = document.querySelector(
-        `.editable-cell[data-row="${itineraryData.length - 1}"][data-field="day"]`
-      );
-      if (target) {
-        target.focus();
-        document.getSelection().selectAllChildren(target);
-        document.getSelection().collapseToEnd();
-      }
-    }
-
-    function resetToOriginal() {
-      const confirmReset = window.confirm(
-        "Reset itinerary back to the original plan from the spreadsheet?\n\n" +
-        "This only affects this browser and will overwrite your current edits."
-      );
-      if (!confirmReset) return;
-
-      itineraryData = structuredClone(initialItinerary);
-      renderTable();
-      saveItinerary();
-    }
-
-    function scrollToBottom() {
-      const scroll = document.getElementById("table-scroll");
-      if (!scroll) return;
-      scroll.scrollTo({
-        top: scroll.scrollHeight,
-        behavior: "smooth"
-      });
-    }
-
-    async function loadScratchpad() {
-  const pad = document.getElementById("scratchpad");
-  if (!pad) return;
-
-  try {
-    const { data, error } = await supabase
-      .from("trips")
-      .select("scratchpad")
-      .eq("id", TRIP_ID)
-      .single();
-
-    if (error) throw error;
-
-    const text = data?.scratchpad || "";
-    if (text) {
-      pad.textContent = text;
-      pad.classList.remove("placeholder");
-    } else {
-      pad.classList.add("placeholder");
-      pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
-    }
-  } catch (e) {
-    console.warn("Scratchpad load failed", e);
-    pad.classList.add("placeholder");
-    pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
   }
 
-  // Same behaviour as before, but saving is now via scheduleSave()
-  pad.addEventListener("focus", () => {
-    if (pad.classList.contains("placeholder")) {
-      pad.classList.remove("placeholder");
-      pad.textContent = "";
-    }
-  });
+  function handleCellBlur(e) {
+    const el = e.currentTarget;
+    const rowIndex = Number(el.dataset.row ?? "-1");
+    const field = el.dataset.field;
+    if (!Number.isFinite(rowIndex) || !field) return;
 
-  pad.addEventListener("blur", () => {
-    const value = pad.textContent.trim();
-    if (!value) {
+    const newValue = el.textContent.trim();
+    itineraryData[rowIndex][field] = newValue;
+    if (!newValue) {
+      el.classList.add("placeholder");
+      el.textContent = placeholderForField(field);
+    }
+    scheduleSave();
+    updateSummary();
+  }
+
+  function handleCellInput(e) {
+    const el = e.currentTarget;
+    el.classList.remove("placeholder");
+    const rowIndex = Number(el.dataset.row ?? "-1");
+    const field = el.dataset.field;
+    if (!Number.isFinite(rowIndex) || !field) return;
+    itineraryData[rowIndex][field] = el.textContent;
+    scheduleSave();
+  }
+
+  function handleCellKeydown(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      const el = e.currentTarget;
+      const rowIndex = Number(el.dataset.row ?? "-1");
+      const field = el.dataset.field;
+      const nextRow = rowIndex + 1;
+      if (nextRow < itineraryData.length) {
+        const next = document.querySelector(
+          `.editable-cell[data-row="${nextRow}"][data-field="${field}"]`
+        );
+        if (next) {
+          next.focus();
+          document.getSelection().selectAllChildren(next);
+          document.getSelection().collapseToEnd();
+        }
+      }
+    }
+  }
+
+  function updateSummary() {
+    const total = itineraryData.length;
+    const dayCountEl = document.getElementById("day-count-label");
+    const summaryCountEl = document.getElementById("summary-count");
+    const lengthLabel = document.getElementById("trip-length-label");
+    const dateRangeChip = document.getElementById("chip-date-range");
+
+    if (summaryCountEl) summaryCountEl.textContent = `${total} entries`;
+
+    const daysWithLabel = itineraryData.filter((r) =>
+      (r.day || "").toLowerCase().includes("day")
+    ).length;
+    if (dayCountEl) {
+      dayCountEl.textContent = `(${daysWithLabel} labeled days, ${total} rows)`;
+    }
+
+    const dates = itineraryData.map((r) => r.date).filter(Boolean);
+    if (dates.length >= 1) {
+      const start = dates[0];
+      const end = dates[dates.length - 1];
+      if (lengthLabel) {
+        lengthLabel.textContent = `${dates.length} days (from ${start} to ${end})`;
+      }
+      if (dateRangeChip) {
+        dateRangeChip.textContent = `${start} → ${end}`;
+      }
+    }
+  }
+
+  function addRow() {
+    const nextIndex = itineraryData.length + 1;
+    const newRow = {
+      date: "",
+      day: `Day ${nextIndex}`,
+      location: "",
+      accommodation: "",
+      transport: "",
+      activities: "",
+      notes: ""
+    };
+    itineraryData.push(newRow);
+    renderTable();
+    scheduleSave();
+
+    const target = document.querySelector(
+      `.editable-cell[data-row="${itineraryData.length - 1}"][data-field="day"]`
+    );
+    if (target) {
+      target.focus();
+      document.getSelection().selectAllChildren(target);
+      document.getSelection().collapseToEnd();
+    }
+  }
+
+  function resetToOriginal() {
+    const confirmReset = window.confirm(
+      "Reset itinerary back to the original plan from the spreadsheet?\n\n" +
+        "This only affects this browser and will overwrite your current edits."
+    );
+    if (!confirmReset) return;
+
+    itineraryData = structuredClone(initialItinerary);
+    renderTable();
+    saveItinerary();
+  }
+
+  function scrollToBottom() {
+    const scroll = document.getElementById("table-scroll");
+    if (!scroll) return;
+    scroll.scrollTo({
+      top: scroll.scrollHeight,
+      behavior: "smooth"
+    });
+  }
+
+  async function loadScratchpad() {
+    const pad = document.getElementById("scratchpad");
+    if (!pad) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("trips")
+        .select("scratchpad")
+        .eq("id", TRIP_ID)
+        .single();
+
+      if (error) throw error;
+
+      const text = data?.scratchpad || "";
+      if (text) {
+        pad.textContent = text;
+        pad.classList.remove("placeholder");
+      } else {
+        pad.classList.add("placeholder");
+        pad.textContent =
+          "Packing list, must-try food, playlists, mini budgets...";
+      }
+    } catch (e) {
+      console.warn("Scratchpad load failed", e);
       pad.classList.add("placeholder");
-      pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
-    }
-    scheduleSave();
-  });
-
-  pad.addEventListener("input", () => {
-    scheduleSave();
-  });
-}
-
-
-    function initButtons() {
-      document.getElementById("btn-add-row")?.addEventListener("click", addRow);
-      document.getElementById("btn-reset")?.addEventListener("click", resetToOriginal);
-      document.getElementById("btn-scroll-bottom")?.addEventListener("click", scrollToBottom);
+      pad.textContent =
+        "Packing list, must-try food, playlists, mini budgets...";
     }
 
-    // Bootstrap
-   window.addEventListener("DOMContentLoaded", async () => {
-  itineraryData = await loadItinerary();   // note: await
-  renderTable();
-  initButtons();
-  await loadScratchpad();
-  updateLastSavedLabel();
-});
-  </script>
+    pad.addEventListener("focus", () => {
+      if (pad.classList.contains("placeholder")) {
+        pad.classList.remove("placeholder");
+        pad.textContent = "";
+      }
+    });
+
+    pad.addEventListener("blur", () => {
+      const value = pad.textContent.trim();
+      if (!value) {
+        pad.classList.add("placeholder");
+        pad.textContent =
+          "Packing list, must-try food, playlists, mini budgets...";
+      }
+      scheduleSave();
+    });
+
+    pad.addEventListener("input", () => {
+      scheduleSave();
+    });
+  }
+
+  function initButtons() {
+    document.getElementById("btn-add-row")?.addEventListener("click", addRow);
+    document.getElementById("btn-reset")?.addEventListener("click", resetToOriginal);
+    document
+      .getElementById("btn-scroll-bottom")
+      ?.addEventListener("click", scrollToBottom);
+  }
+
+  window.addEventListener("DOMContentLoaded", async () => {
+    itineraryData = await loadItinerary();
+    renderTable();
+    initButtons();
+    await loadScratchpad();
+    updateLastSavedLabel();
+  });
+</script>
 </body>
 </html>
