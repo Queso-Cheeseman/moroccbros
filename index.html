@@ -1056,11 +1056,16 @@
     </section>
   </main>
 
-  <script>
-    // NOTE:
-    // This version saves updates in the browser using localStorage.
-    // For all users to see the same edits live, you’ll want to hook
-    // these save/load functions up to a backend API or database.
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_KEY_HERE";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// This is the one shared record we created in the trips table
+const TRIP_ID = "moroccbros-2025";
 
     const STORAGE_KEY = "moroccbros-itinerary-v1";
     const SCRATCHPAD_KEY = "moroccbros-scratchpad-v1";
@@ -1216,44 +1221,68 @@
     let itineraryData = [];
     let saveTimeout = null;
 
-    function loadItinerary() {
-      try {
-        const stored = window.localStorage.getItem(STORAGE_KEY);
-        if (!stored) return structuredClone(initialItinerary);
-        const parsed = JSON.parse(stored);
-        if (!Array.isArray(parsed) || !parsed.length) {
-          return structuredClone(initialItinerary);
-        }
-        // Make sure all expected keys exist
-        return parsed.map(row => {
-          const base = {};
-          columns.forEach(col => {
-            base[col.key] = typeof row[col.key] === "string" ? row[col.key] : "";
-          });
-          return base;
-        });
-      } catch (e) {
-        console.warn("Failed to load itinerary from storage", e);
-        return structuredClone(initialItinerary);
-      }
+    async function loadItinerary() {
+  try {
+    const { data, error } = await supabase
+      .from("trips")
+      .select("itinerary")
+      .eq("id", TRIP_ID)
+      .single();
+
+    if (error) throw error;
+
+    const parsed = data?.itinerary;
+    if (!Array.isArray(parsed) || !parsed.length) {
+      return structuredClone(initialItinerary);
     }
 
-    function saveItinerary() {
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(itineraryData));
-        updateStatus("All changes saved locally.");
-        updateLastSavedLabel();
-      } catch (e) {
-        console.warn("Failed to save itinerary", e);
-        updateStatus("Could not save to this browser (storage full or disabled).");
-      }
-    }
+    // Ensure all expected keys exist, same as before
+    return parsed.map(row => {
+      const base = {};
+      columns.forEach(col => {
+        base[col.key] = typeof row[col.key] === "string" ? row[col.key] : "";
+      });
+      return base;
+    });
+  } catch (e) {
+    console.warn("Failed to load itinerary from Supabase, falling back to defaults", e);
+    return structuredClone(initialItinerary);
+  }
+}
 
+   async function saveItinerary() {
+  try {
+    const scratchpadText = getScratchpadText();
+
+    const { error } = await supabase
+      .from("trips")
+      .update({
+        itinerary: itineraryData,
+        scratchpad: scratchpadText,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", TRIP_ID);
+
+    if (error) throw error;
+
+    updateStatus("All changes saved to server.");
+    updateLastSavedLabel();
+  } catch (e) {
+    console.warn("Failed to save itinerary to Supabase", e);
+    updateStatus("Could not save to server.");
+  }
+}
+
+function getScratchpadText() {
+  const pad = document.getElementById("scratchpad");
+  if (!pad || pad.classList.contains("placeholder")) return "";
+  return pad.textContent;
+}
     function scheduleSave() {
-      if (saveTimeout) window.clearTimeout(saveTimeout);
-      updateStatus("Saving...");
-      saveTimeout = window.setTimeout(saveItinerary, 350);
-    }
+  if (saveTimeout) window.clearTimeout(saveTimeout);
+  updateStatus("Saving...");
+  saveTimeout = window.setTimeout(saveItinerary, 350);
+}
 
     function updateStatus(text) {
       const el = document.getElementById("status-text");
@@ -1458,52 +1487,55 @@
       });
     }
 
-    function loadScratchpad() {
-      const pad = document.getElementById("scratchpad");
-      if (!pad) return;
-      try {
-        const stored = window.localStorage.getItem(SCRATCHPAD_KEY);
-        if (stored) {
-          pad.textContent = stored;
-        } else {
-          pad.classList.add("placeholder");
-          pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
-        }
-      } catch (e) {
-        console.warn("Scratchpad load failed", e);
-      }
+    async function loadScratchpad() {
+  const pad = document.getElementById("scratchpad");
+  if (!pad) return;
 
-      pad.addEventListener("focus", () => {
-        if (pad.classList.contains("placeholder")) {
-          pad.classList.remove("placeholder");
-          pad.textContent = "";
-        }
-      });
+  try {
+    const { data, error } = await supabase
+      .from("trips")
+      .select("scratchpad")
+      .eq("id", TRIP_ID)
+      .single();
 
-      pad.addEventListener("blur", () => {
-        const value = pad.textContent.trim();
-        if (!value) {
-          pad.classList.add("placeholder");
-          pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
-        }
-        saveScratchpad();
-      });
+    if (error) throw error;
 
-      pad.addEventListener("input", () => {
-        saveScratchpad();
-      });
+    const text = data?.scratchpad || "";
+    if (text) {
+      pad.textContent = text;
+      pad.classList.remove("placeholder");
+    } else {
+      pad.classList.add("placeholder");
+      pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
     }
+  } catch (e) {
+    console.warn("Scratchpad load failed", e);
+    pad.classList.add("placeholder");
+    pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
+  }
 
-    function saveScratchpad() {
-      const pad = document.getElementById("scratchpad");
-      if (!pad) return;
-      try {
-        const text = pad.classList.contains("placeholder") ? "" : pad.textContent;
-        window.localStorage.setItem(SCRATCHPAD_KEY, text);
-      } catch (e) {
-        console.warn("Scratchpad save failed", e);
-      }
+  // Same behaviour as before, but saving is now via scheduleSave()
+  pad.addEventListener("focus", () => {
+    if (pad.classList.contains("placeholder")) {
+      pad.classList.remove("placeholder");
+      pad.textContent = "";
     }
+  });
+
+  pad.addEventListener("blur", () => {
+    const value = pad.textContent.trim();
+    if (!value) {
+      pad.classList.add("placeholder");
+      pad.textContent = "Packing list, must-try food, playlists, mini budgets...";
+    }
+    scheduleSave();
+  });
+
+  pad.addEventListener("input", () => {
+    scheduleSave();
+  });
+}
+
 
     function initButtons() {
       document.getElementById("btn-add-row")?.addEventListener("click", addRow);
@@ -1512,13 +1544,13 @@
     }
 
     // Bootstrap
-    window.addEventListener("DOMContentLoaded", () => {
-      itineraryData = loadItinerary();
-      renderTable();
-      initButtons();
-      loadScratchpad();
-      updateLastSavedLabel();
-    });
+   window.addEventListener("DOMContentLoaded", async () => {
+  itineraryData = await loadItinerary();   // note: await
+  renderTable();
+  initButtons();
+  await loadScratchpad();
+  updateLastSavedLabel();
+});
   </script>
 </body>
 </html>
